@@ -2,7 +2,6 @@
 namespace ChristendomSSO;
 
 class Cookie_Manager {
-    public const COOKIE_NAME = 'christendom_jwt';
     private const COOKIE_DURATION = 3600;
 
     public function set_token_cookie(string $token): bool {
@@ -11,7 +10,7 @@ class Cookie_Manager {
             return false;
         }
 
-        return setcookie(self::COOKIE_NAME, $token, [
+        return setcookie(Settings_Manager::get_cookie_name(), $token, [
             'expires' => time() + self::COOKIE_DURATION,
             'path' => '/',
             'secure' => true,
@@ -21,19 +20,21 @@ class Cookie_Manager {
     }
 
     public function get_token_cookie(): ?string {
-        return $_COOKIE[self::COOKIE_NAME] ?? null;
+        return $_COOKIE[Settings_Manager::get_cookie_name()] ?? null;
     }
 
     public function clear_token_cookie(): bool {
+        $cookie_name = Settings_Manager::get_cookie_name();
+        
         // Always unset the cookie from $_COOKIE
-        unset($_COOKIE[self::COOKIE_NAME]);
+        unset($_COOKIE[$cookie_name]);
         
         // Try multiple paths to ensure cookie is cleared
         $paths = ['/', '/wp-admin', '/wp-content', ''];
         
         foreach ($paths as $path) {
             if (!headers_sent()) {
-                setcookie(self::COOKIE_NAME, '', [
+                setcookie($cookie_name, '', [
                     'expires' => time() - 3600,
                     'path' => $path,
                     'secure' => true,

@@ -8,6 +8,7 @@ WordPress plugin for managing JWT tokens between courses.christendom.edu and Ann
 - Admin debug interface
 - SSO integration with MiniOrange OAuth
 - Configurable cookie security settings
+- Configurable cookie name
 - WordPress admin settings interface
 
 ## Requirements
@@ -15,6 +16,11 @@ WordPress plugin for managing JWT tokens between courses.christendom.edu and Ann
 - MiniOrange OAuth Enterprise
 
 ## Version History
+### 1.0.3
+- Added configurable cookie name
+- Changed default cookie name to 'sso_jwt'
+- Updated settings interface
+
 ### 1.0.2
 - Added Settings Manager for cookie configuration
 - Added admin settings page under Settings > Christendom SSO

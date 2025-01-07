@@ -1,36 +1,28 @@
 === Christendom SSO Token Handler ===
-Contributors: adelmare
-Tags: sso, jwt, oauth
+Contributors: allandelmare
+Tags: sso, jwt, oauth, authentication
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.2
-License: GPLv2
+Stable tag: 1.0.3
+License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Manages JWT tokens for SSO integration between WordPress (courses.christendom.edu) and Annunciate platform.
+Manages JWT tokens for SSO integration between WordPress and external applications.
 
 == Description ==
-Handles secure token management for Single Sign-On between WordPress and Annunciate platform:
-* Captures JWT tokens from MiniOrange OAuth
-* Stores tokens securely as HTTP-only cookies
-* Provides debug interface for administrators
-* Facilitates seamless authentication between domains
-* Configurable cookie security settings
-
-== Installation ==
-1. Upload plugin files to `/wp-content/plugins/christendom-sso/`
-2. Activate plugin through WordPress admin
-3. Configure MiniOrange OAuth plugin (Enterprise version required)
-4. Configure cookie settings under Settings > Christendom SSO
+Securely handle JWT tokens from MiniOrange OAuth for SSO integration. Stores tokens in secure HTTP-only cookies with configurable settings.
 
 == Changelog ==
+= 1.0.3 =
+* Added configurable cookie name setting
+* Changed default cookie name to 'sso_jwt'
+* Updated settings interface
+
 = 1.0.2 =
-* Added Settings Manager for cookie configuration
-* Added admin settings page under Settings > Christendom SSO
-* Configurable SameSite policy (Strict/Lax/None)
-* Configurable HttpOnly flag
-* Improved initialization sequence
-* Enhanced namespace implementation
+* Added Settings Manager
+* Added admin settings page
+* Configurable SameSite and HttpOnly settings
+* Improved initialization
 
 = 1.0.1 =
-* Initial public release
+* Initial release
