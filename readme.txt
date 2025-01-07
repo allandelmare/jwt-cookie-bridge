@@ -12,11 +12,24 @@ Manages JWT tokens for SSO integration between WordPress and external applicatio
 == Description ==
 Securely handle JWT tokens from MiniOrange OAuth for SSO integration. Stores tokens in secure HTTP-only cookies with configurable settings.
 
+== Installation ==
+1. Upload `christendom-sso` directory to `/wp-content/plugins/`
+2. Activate through WordPress admin interface
+3. Configure through Settings → SSO Settings
+
+== Frequently Asked Questions ==
+= How are tokens stored? =
+Tokens are stored in secure HTTP-only cookies with configurable SameSite policy.
+
+= Is debug mode available? =
+Yes, enable debug mode in SSO Settings to access the debug dashboard.
+
 == Changelog ==
 = 1.0.3 =
 * Added configurable cookie name setting
 * Changed default cookie name to 'sso_jwt'
 * Updated settings interface
+* Added automated build and release process
 
 = 1.0.2 =
 * Added Settings Manager

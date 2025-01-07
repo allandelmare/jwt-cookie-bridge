@@ -1,33 +1,46 @@
 # Christendom SSO Token Handler
 
-WordPress plugin for managing JWT tokens between courses.christendom.edu and Annunciate platform.
+A WordPress plugin to handle JWT tokens for SSO integration between WordPress and external applications.
 
-## Features
-- Secure JWT token handling
-- HTTP-only cookie storage
-- Admin debug interface
-- SSO integration with MiniOrange OAuth
-- Configurable cookie security settings
-- Configurable cookie name
-- WordPress admin settings interface
+## Description
+Manages secure storage of JWT tokens from MiniOrange OAuth/OpenID Connect for SSO integration, storing tokens in secure HTTP-only cookies with configurable settings.
 
-## Requirements
+## Installation
+1. Upload `christendom-sso` directory to `/wp-content/plugins/`
+2. Activate through WordPress admin interface
+3. Configure through Settings → SSO Settings
+
+## Development
+
+### Prerequisites
+- PHP 7.4+
 - WordPress 5.0+
-- MiniOrange OAuth Enterprise
+- MiniOrange OAuth/OpenID Enterprise
 
-## Version History
-### 1.0.3
-- Added configurable cookie name
-- Changed default cookie name to 'sso_jwt'
-- Updated settings interface
+### Building
+The plugin uses GitHub Actions for automated releases:
 
-### 1.0.2
-- Added Settings Manager for cookie configuration
-- Added admin settings page under Settings > Christendom SSO
-- Configurable SameSite policy (Strict/Lax/None)
-- Configurable HttpOnly flag
-- Improved initialization sequence
-- Enhanced namespace implementation
+1. Tag a new version:
+```bash
+git tag -a v1.0.4 -m "Release version 1.0.4"
+git push origin v1.0.4
+```
 
-### 1.0.1
-- Initial public release
+2. GitHub Actions will automatically:
+   - Create a new release
+   - Build plugin zip file (christendom-sso-1.0.4.zip)
+   - Attach zip to release
+
+### Manual Build
+To build manually:
+```bash
+mkdir -p build/christendom-sso
+cp -r src build/christendom-sso/
+cp christendom-sso.php build/christendom-sso/
+cp readme.txt build/christendom-sso/
+cp README.md build/christendom-sso/
+cd build && zip -r ../christendom-sso.zip christendom-sso/
+```
+
+## License
+GPLv2 or later
