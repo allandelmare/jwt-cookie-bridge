@@ -15,8 +15,8 @@ class Cookie_Manager {
             'expires' => time() + self::COOKIE_DURATION,
             'path' => '/',
             'secure' => true,
-            'httponly' => true,
-            'samesite' => 'Lax'
+            'httponly' => Settings_Manager::is_http_only(),
+            'samesite' => Settings_Manager::get_samesite_policy()
         ]);
     }
 
@@ -37,8 +37,8 @@ class Cookie_Manager {
                     'expires' => time() - 3600,
                     'path' => $path,
                     'secure' => true,
-                    'httponly' => true,
-                    'samesite' => 'Lax'
+                    'httponly' => Settings_Manager::is_http_only(),
+                    'samesite' => Settings_Manager::get_samesite_policy()
                 ]);
             }
         }
