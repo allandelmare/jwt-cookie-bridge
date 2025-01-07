@@ -11,18 +11,19 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      
+        
       - name: Create Plugin Directory Structure
         run: |
-          mkdir build
-          cp -r src build/
-          cp christendom-sso.php build/
-          cp readme.md build/
-      
+          mkdir -p build/christendom-sso
+          cp -r src build/christendom-sso/
+          cp christendom-sso.php build/christendom-sso/
+          cp readme.txt build/christendom-sso/
+          cp readme.md build/christendom-sso/
+        
       - name: Zip Plugin
         run: |
-          cd build && zip -r ../christendom-sso.zip .
-      
+          cd build && zip -r ../christendom-sso.zip christendom-sso/
+        
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
