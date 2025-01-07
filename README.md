@@ -1,46 +1,38 @@
-# Christendom SSO Token Handler
+# JWT Cookie Bridge for MiniOrange SSO
 
-A WordPress plugin to handle JWT tokens for SSO integration between WordPress and external applications.
+A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID in HTTP-only cookies for seamless SSO integration.
 
-## Description
-Manages secure storage of JWT tokens from MiniOrange OAuth/OpenID Connect for SSO integration, storing tokens in secure HTTP-only cookies with configurable settings.
+## Features
+
+- Secure HTTP-only cookie storage for JWT tokens
+- Configurable SameSite policy and cookie settings
+- Debug dashboard for token inspection and management
+- Compatible with MiniOrange OAuth/OpenID Enterprise edition
+- Cookie domain and duration configuration
 
 ## Installation
-1. Upload `christendom-sso` directory to `/wp-content/plugins/`
+
+1. Upload `jwt-cookie-bridge` directory to `/wp-content/plugins/`
 2. Activate through WordPress admin interface
-3. Configure through Settings → SSO Settings
+3. Configure through Settings → JWT Cookie Bridge
 
-## Development
+## Requirements
 
-### Prerequisites
-- PHP 7.4+
 - WordPress 5.0+
-- MiniOrange OAuth/OpenID Enterprise
+- PHP 7.4+
+- MiniOrange OAuth/OpenID Enterprise edition
 
-### Building
-The plugin uses GitHub Actions for automated releases:
+## Configuration
 
-1. Tag a new version:
-```bash
-git tag -a v1.0.4 -m "Release version 1.0.4"
-git push origin v1.0.4
-```
+Access plugin settings via WordPress admin:
+1. Settings → JWT Cookie Bridge
+2. Configure cookie name, duration, and security policies
+3. Enable debug mode if needed
 
-2. GitHub Actions will automatically:
-   - Create a new release
-   - Build plugin zip file (christendom-sso-1.0.4.zip)
-   - Attach zip to release
+## Support
 
-### Manual Build
-To build manually:
-```bash
-mkdir -p build/christendom-sso
-cp -r src build/christendom-sso/
-cp christendom-sso.php build/christendom-sso/
-cp readme.txt build/christendom-sso/
-cp README.md build/christendom-sso/
-cd build && zip -r ../christendom-sso.zip christendom-sso/
-```
+For issues and feature requests, please use the GitHub issue tracker.
 
 ## License
+
 GPLv2 or later

@@ -1,5 +1,5 @@
 <?php
-namespace ChristendomSSO;
+namespace JWTCookieBridge;
 
 class Cookie_Manager {
     private const COOKIE_DURATION = 3600;

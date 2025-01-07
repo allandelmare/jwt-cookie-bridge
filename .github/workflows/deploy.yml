@@ -11,25 +11,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-      
+        
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-            
+              
       - name: Create Plugin Directory Structure
         run: |
-          mkdir -p build/christendom-sso
-          cp -r src build/christendom-sso/
-          cp christendom-sso.php build/christendom-sso/
-          cp readme.txt build/christendom-sso/
-          cp README.md build/christendom-sso/
-            
+          mkdir -p build/jwt-cookie-bridge
+          cp -r src build/jwt-cookie-bridge/
+          cp jwt-cookie-bridge.php build/jwt-cookie-bridge/
+          cp readme.txt build/jwt-cookie-bridge/
+          cp README.md build/jwt-cookie-bridge/
+              
       - name: Zip Plugin
         run: |
-          cd build && zip -r ../christendom-sso-${{ env.VERSION }}.zip christendom-sso/
-            
+          cd build && zip -r ../jwt-cookie-bridge-${{ env.VERSION }}.zip jwt-cookie-bridge/
+              
       - name: Create Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: christendom-sso-${{ env.VERSION }}.zip
+          files: jwt-cookie-bridge-${{ env.VERSION }}.zip

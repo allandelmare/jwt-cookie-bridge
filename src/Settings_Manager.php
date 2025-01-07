@@ -1,144 +1,100 @@
 <?php
-namespace ChristendomSSO;
+namespace JWTCookieBridge;
 
 class Settings_Manager {
-    private const OPTION_NAME = 'christendom_sso_options';
-    
+    private static $options = null;
+    private const OPTION_NAME = 'jwt_cookie_bridge_options';
+
     public function __construct() {
-        add_action('admin_menu', [$this, 'add_settings_page']);
+        add_action('admin_menu', [$this, 'add_settings_menu']);
         add_action('admin_init', [$this, 'register_settings']);
     }
 
-    public static function is_debug_enabled(): bool {
-        $options = get_option(self::OPTION_NAME);
-        return isset($options['debug_mode']) && $options['debug_mode'];
+    private static function load_options() {
+        if (self::$options === null) {
+            self::$options = get_option(self::OPTION_NAME, [
+                'debug_mode' => false,
+                'samesite_policy' => 'Lax',
+                'http_only' => true,
+                'cookie_name' => 'mo_jwt',
+                'cookie_duration' => 3600,
+                'allowed_domains' => ''
+            ]);
+        }
+        return self::$options;
     }
 
-    public static function is_http_only(): bool {
-        $options = get_option(self::OPTION_NAME);
-        return isset($options['http_only']) && $options['http_only'];
-    }
-
-    public static function get_samesite_policy(): string {
-        $options = get_option(self::OPTION_NAME);
-        return $options['samesite_policy'] ?? 'Lax';
-    }
-
-    public static function get_cookie_name(): string {
-        $options = get_option(self::OPTION_NAME);
-        return $options['cookie_name'] ?? 'sso_jwt';
-    }
-
-    public function add_settings_page() {
+    public function add_settings_menu() {
         add_options_page(
-            'Christendom SSO Settings',
-            'Christendom SSO',
+            'JWT Cookie Bridge Settings',
+            'JWT Cookie Bridge',
             'manage_options',
-            'christendom-sso-settings',
+            'jwt-cookie-bridge',
             [$this, 'render_settings_page']
         );
     }
 
     public function register_settings() {
-        register_setting(
-            'christendom_sso_settings',
-            self::OPTION_NAME,
-            [
-                'type' => 'array',
-                'sanitize_callback' => [$this, 'sanitize_settings']
-            ]
-        );
+        register_setting(self::OPTION_NAME, self::OPTION_NAME, [
+            'type' => 'array',
+            'sanitize_callback' => [$this, 'sanitize_settings']
+        ]);
 
         add_settings_section(
-            'christendom_sso_main',
-            'Main Settings',
-            [$this, 'render_section_info'],
-            'christendom-sso-settings'
+            'jwt_cookie_bridge_main',
+            'Cookie Settings',
+            null,
+            'jwt-cookie-bridge'
         );
 
         add_settings_field(
             'cookie_name',
             'Cookie Name',
-            [$this, 'render_cookie_name_field'],
-            'christendom-sso-settings',
-            'christendom_sso_main'
+            [$this, 'render_text_field'],
+            'jwt-cookie-bridge',
+            'jwt_cookie_bridge_main',
+            ['field' => 'cookie_name', 'default' => 'mo_jwt']
         );
 
         add_settings_field(
-            'debug_mode',
-            'Debug Mode',
-            [$this, 'render_debug_mode_field'],
-            'christendom-sso-settings',
-            'christendom_sso_main'
-        );
-
-        add_settings_field(
-            'http_only',
-            'HTTP Only Cookie',
-            [$this, 'render_http_only_field'],
-            'christendom-sso-settings',
-            'christendom_sso_main'
+            'cookie_duration',
+            'Cookie Duration (seconds)',
+            [$this, 'render_number_field'],
+            'jwt-cookie-bridge',
+            'jwt_cookie_bridge_main',
+            ['field' => 'cookie_duration', 'default' => 3600]
         );
 
         add_settings_field(
             'samesite_policy',
             'SameSite Policy',
-            [$this, 'render_samesite_field'],
-            'christendom-sso-settings',
-            'christendom_sso_main'
+            [$this, 'render_select_field'],
+            'jwt-cookie-bridge',
+            'jwt_cookie_bridge_main',
+            [
+                'field' => 'samesite_policy',
+                'options' => ['Lax' => 'Lax', 'Strict' => 'Strict', 'None' => 'None'],
+                'default' => 'Lax'
+            ]
         );
-    }
 
-    public function sanitize_settings($input) {
-        $sanitized = [];
-        
-        $sanitized['cookie_name'] = sanitize_text_field($input['cookie_name'] ?? 'sso_jwt');
-        $sanitized['debug_mode'] = isset($input['debug_mode']);
-        $sanitized['http_only'] = isset($input['http_only']);
-        
-        $valid_policies = ['Strict', 'Lax', 'None'];
-        $sanitized['samesite_policy'] = in_array($input['samesite_policy'], $valid_policies) 
-            ? $input['samesite_policy'] 
-            : 'Lax';
-            
-        return $sanitized;
-    }
+        add_settings_field(
+            'http_only',
+            'HTTP Only Cookie',
+            [$this, 'render_checkbox_field'],
+            'jwt-cookie-bridge',
+            'jwt_cookie_bridge_main',
+            ['field' => 'http_only', 'default' => true]
+        );
 
-    public function render_section_info() {
-        echo '<p>Configure the SSO integration settings below:</p>';
-    }
-
-    public function render_cookie_name_field() {
-        $options = get_option(self::OPTION_NAME);
-        $value = $options['cookie_name'] ?? 'sso_jwt';
-        echo '<input type="text" name="' . self::OPTION_NAME . '[cookie_name]" value="' . esc_attr($value) . '" class="regular-text">';
-        echo '<p class="description">The name of the cookie used to store the JWT token. Default: sso_jwt</p>';
-    }
-
-    public function render_debug_mode_field() {
-        $options = get_option(self::OPTION_NAME);
-        echo '<input type="checkbox" name="' . self::OPTION_NAME . '[debug_mode]" ' . 
-            checked(isset($options['debug_mode']) && $options['debug_mode'], true, false) . '>';
-    }
-
-    public function render_http_only_field() {
-        $options = get_option(self::OPTION_NAME);
-        echo '<input type="checkbox" name="' . self::OPTION_NAME . '[http_only]" ' . 
-            checked(isset($options['http_only']) && $options['http_only'], true, false) . '>';
-    }
-
-    public function render_samesite_field() {
-        $options = get_option(self::OPTION_NAME);
-        $current = $options['samesite_policy'] ?? 'Lax';
-        $policies = ['Strict', 'Lax', 'None'];
-        
-        echo '<select name="' . self::OPTION_NAME . '[samesite_policy]">';
-        foreach ($policies as $policy) {
-            echo '<option value="' . esc_attr($policy) . '" ' . 
-                selected($current, $policy, false) . '>' . 
-                esc_html($policy) . '</option>';
-        }
-        echo '</select>';
+        add_settings_field(
+            'debug_mode',
+            'Debug Mode',
+            [$this, 'render_checkbox_field'],
+            'jwt-cookie-bridge',
+            'jwt_cookie_bridge_main',
+            ['field' => 'debug_mode', 'default' => false]
+        );
     }
 
     public function render_settings_page() {
@@ -149,13 +105,94 @@ class Settings_Manager {
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <form action="options.php" method="post">
-            <?php
-                settings_fields('christendom_sso_settings');
-                do_settings_sections('christendom-sso-settings');
-                submit_button();
-            ?>
+                <?php
+                settings_fields(self::OPTION_NAME);
+                do_settings_sections('jwt-cookie-bridge');
+                submit_button('Save Settings');
+                ?>
             </form>
         </div>
         <?php
+    }
+
+    public function render_text_field($args) {
+        $options = self::load_options();
+        $value = $options[$args['field']] ?? $args['default'];
+        echo '<input type="text" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
+             '" value="' . esc_attr($value) . '" class="regular-text">';
+    }
+
+    public function render_number_field($args) {
+        $options = self::load_options();
+        $value = $options[$args['field']] ?? $args['default'];
+        echo '<input type="number" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
+             '" value="' . esc_attr($value) . '" class="regular-text">';
+    }
+
+    public function render_select_field($args) {
+        $options = self::load_options();
+        $value = $options[$args['field']] ?? $args['default'];
+        echo '<select name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . '">';
+        foreach ($args['options'] as $key => $label) {
+            echo '<option value="' . esc_attr($key) . '"' . selected($value, $key, false) . '>' . 
+                 esc_html($label) . '</option>';
+        }
+        echo '</select>';
+    }
+
+    public function render_checkbox_field($args) {
+        $options = self::load_options();
+        $value = $options[$args['field']] ?? $args['default'];
+        echo '<input type="checkbox" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
+             '" ' . checked($value, true, false) . ' value="1">';
+    }
+
+    public function sanitize_settings($input) {
+        $sanitized = [];
+        
+        if (isset($input['cookie_name'])) {
+            $sanitized['cookie_name'] = sanitize_text_field($input['cookie_name']);
+        }
+        
+        if (isset($input['cookie_duration'])) {
+            $sanitized['cookie_duration'] = absint($input['cookie_duration']);
+        }
+        
+        if (isset($input['samesite_policy'])) {
+            $sanitized['samesite_policy'] = in_array($input['samesite_policy'], ['Lax', 'Strict', 'None']) 
+                ? $input['samesite_policy'] 
+                : 'Lax';
+        }
+        
+        $sanitized['http_only'] = isset($input['http_only']);
+        $sanitized['debug_mode'] = isset($input['debug_mode']);
+        
+        return $sanitized;
+    }
+
+    // Static getter methods for settings
+    public static function is_debug_enabled(): bool {
+        $options = self::load_options();
+        return $options['debug_mode'] ?? false;
+    }
+
+    public static function get_cookie_name(): string {
+        $options = self::load_options();
+        return $options['cookie_name'] ?? 'mo_jwt';
+    }
+
+    public static function get_samesite_policy(): string {
+        $options = self::load_options();
+        return $options['samesite_policy'] ?? 'Lax';
+    }
+
+    public static function is_http_only(): bool {
+        $options = self::load_options();
+        return $options['http_only'] ?? true;
+    }
+
+    public static function get_cookie_duration(): int {
+        $options = self::load_options();
+        return $options['cookie_duration'] ?? 3600;
     }
 }

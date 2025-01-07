@@ -1,5 +1,5 @@
 <?php
-namespace ChristendomSSO;
+namespace JWTCookieBridge;
 
 class Debug_Dashboard {
     public function __construct() {
@@ -16,7 +16,7 @@ class Debug_Dashboard {
             'SSO Debug',
             'SSO Debug',
             'manage_options',
-            'christendom-sso-debug',
+            'jwt-cookie-bridge-debug',
             [$this, 'render_debug_page'],
             'dashicons-visibility'
         );
@@ -26,8 +26,9 @@ class Debug_Dashboard {
         check_admin_referer('reset_sso_token');
         
         // Force cookie deletion immediately
-        setcookie(Cookie_Manager::COOKIE_NAME, '', time() - 3600, '/');
-        setcookie(Cookie_Manager::COOKIE_NAME, '', time() - 3600, '/wp-admin');
+        $cookie_name = Settings_Manager::get_cookie_name();
+        setcookie($cookie_name, '', time() - 3600, '/');
+        setcookie($cookie_name, '', time() - 3600, '/wp-admin');
         
         // Then try the cookie manager's method
         $cookie_manager = new Cookie_Manager();
@@ -35,7 +36,7 @@ class Debug_Dashboard {
         
         error_log('SSO token reset attempted. Result: ' . ($result ? 'success' : 'failed'));
         
-        wp_redirect(admin_url('admin.php?page=christendom-sso-debug&reset=' . ($result ? '1' : '0')));
+        wp_redirect(admin_url('admin.php?page=jwt-cookie-bridge-debug&reset=' . ($result ? '1' : '0')));
         exit;
     }
 
@@ -45,8 +46,9 @@ class Debug_Dashboard {
         }
 
         // Clear cookie display value if reset was requested
+        $cookie_name = Settings_Manager::get_cookie_name();
         if (isset($_GET['reset']) && $_GET['reset'] === '1') {
-            unset($_COOKIE[Cookie_Manager::COOKIE_NAME]);
+            unset($_COOKIE[$cookie_name]);
         }
 
         // Show appropriate message based on reset result
@@ -57,7 +59,6 @@ class Debug_Dashboard {
             echo '<div class="notice notice-' . esc_attr($message_class) . '"><p>' . esc_html($message) . '</p></div>';
         }
 
-        $cookie_name = Cookie_Manager::COOKIE_NAME;
         $current_token = $_COOKIE[$cookie_name] ?? null;
         ?>
         <div class="wrap">
