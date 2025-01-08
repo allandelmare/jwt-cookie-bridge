@@ -20,6 +20,7 @@ jobs:
         run: |
           mkdir -p build/jwt-cookie-bridge
           cp -r src build/jwt-cookie-bridge/
+          cp -r assets build/jwt-cookie-bridge/
           cp jwt-cookie-bridge.php build/jwt-cookie-bridge/
           cp readme.txt build/jwt-cookie-bridge/
           cp README.md build/jwt-cookie-bridge/
