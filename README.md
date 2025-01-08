@@ -1,10 +1,10 @@
 # JWT Cookie Bridge for MiniOrange SSO
 
-A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID in HTTP-only cookies for seamless SSO integration.
+A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID in a cookie for seamless SSO integration.
 
 ## Features
 
-- Secure HTTP-only cookie storage for JWT tokens
+- Secure cookie storage for JWT tokens
 - Configurable SameSite policy and cookie settings
 - Enhanced debug dashboard with token process tracking
 - Token process monitoring and validation

@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Securely handle JWT tokens for SSO integration between WordPress and external applications.
 
 == Description ==
-Securely handle JWT tokens from MiniOrange OAuth for SSO integration. Stores tokens in secure HTTP-only cookies with configurable settings.
+Securely handle JWT tokens from MiniOrange OAuth for SSO integration. Stores tokens in secure cookies with configurable settings.
 
 Features:
 * Secure HTTP-only cookie storage
