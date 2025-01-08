@@ -5,8 +5,12 @@ namespace JWTCookieBridge;
  * Handles secure cookie operations for JWT tokens
  */
 class Cookie_Manager {
-    private const SECURE_DOMAINS = ['.christendom.edu'];
-    private const COOKIE_PREFIX = '__Host-';
+    private const ALLOWED_DOMAINS = [
+        'christendom.edu',
+        'courses.christendom.edu',
+        'online.christendom.edu',
+        'localhost'
+    ];
     
     /**
      * Set JWT token as secure cookie
@@ -26,7 +30,7 @@ class Cookie_Manager {
             );
         }
 
-        $cookie_name = $this->get_cookie_name();
+        $cookie_name = Settings_Manager::get_cookie_name();
         $domain = $this->get_cookie_domain();
         
         if (!$this->validate_domain($domain)) {
@@ -59,7 +63,7 @@ class Cookie_Manager {
      * @return string|null Token or null if not found
      */
     public function get_token_cookie(): ?string {
-        $cookie_name = $this->get_cookie_name();
+        $cookie_name = Settings_Manager::get_cookie_name();
         
         if (!isset($_COOKIE[$cookie_name])) {
             return null;
@@ -81,7 +85,7 @@ class Cookie_Manager {
      * @return bool Success status
      */
     public function clear_token_cookie(): bool {
-        $cookie_name = $this->get_cookie_name();
+        $cookie_name = Settings_Manager::get_cookie_name();
         $paths = ['/', '/wp-admin', '/wp-content', ''];
         $domain = $this->get_cookie_domain();
         
@@ -115,21 +119,11 @@ class Cookie_Manager {
         return [
             'expires' => time() + Settings_Manager::get_cookie_duration(),
             'path' => '/',
-            'domain' => $domain,
+            'domain' => '.' . ltrim($domain, '.'),
             'secure' => true,
             'httponly' => Settings_Manager::is_http_only(),
             'samesite' => Settings_Manager::get_samesite_policy()
         ];
-    }
-
-    /**
-     * Get cookie name with appropriate prefix
-     *
-     * @return string Cookie name
-     */
-    private function get_cookie_name(): string {
-        $base_name = Settings_Manager::get_cookie_name();
-        return self::COOKIE_PREFIX . $base_name;
     }
 
     /**
@@ -192,9 +186,9 @@ class Cookie_Manager {
             return true;
         }
 
-        // Check against allowed domains
-        foreach (self::SECURE_DOMAINS as $allowed_domain) {
-            if (str_ends_with($domain, $allowed_domain)) {
+        foreach (self::ALLOWED_DOMAINS as $allowed_domain) {
+            if ($domain === $allowed_domain || 
+                strpos($domain, '.' . $allowed_domain) !== false) {
                 return true;
             }
         }

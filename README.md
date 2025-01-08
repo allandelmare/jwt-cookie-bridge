@@ -131,6 +131,13 @@ Developed by Allan Delmare for seamless integration between WordPress and extern
 
 ## Changelog
 
+### Version 1.0.7.2
+- Fixed cookie domain handling for cross-domain compatibility
+- Enhanced domain validation for subdomain support
+
+### Version 1.0.7.1
+- Fixed .yml packager
+
 ### Version 1.0.7
 - Enhanced JWT token validation and security
 - Added __Host- prefix to cookies

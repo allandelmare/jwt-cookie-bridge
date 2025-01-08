@@ -100,6 +100,13 @@ The plugin implements multiple security layers:
 
 == Changelog ==
 
+= 1.0.7.2 =
+* Fixed cookie domain handling for cross-domain compatibility
+* Enhanced domain validation for subdomain support
+
+= 1.0.7.1 =
+* Important fix for cookie domain handling. Upgrade recommended for all users using cross-domain SSO.
+
 = 1.0.7 =
 * Added __Host- prefix to cookies for enhanced security
 * Enhanced JWT token validation and security checks
@@ -114,11 +121,6 @@ The plugin implements multiple security layers:
 
 = 1.0.6 =
 * Initial release with basic functionality
-
-== Upgrade Notice ==
-
-= 1.0.7 =
-Important security and functionality improvements including enhanced token validation, improved cookie security with __Host- prefix, and better UI. Upgrade recommended for all users.
 
 == Privacy Notice ==
 
