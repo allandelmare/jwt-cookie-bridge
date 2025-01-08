@@ -31,7 +31,7 @@ Perfect for:
 * Custom SSO implementations
 
 Security Features:
-* Configurable HTTP-only cookies (enabled by default)
+* Configurable HTTP-only cookies (disabled by default)
 * Configurable SameSite policies
 * Enhanced token validation
 * Domain validation

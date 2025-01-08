@@ -12,7 +12,7 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Translation-ready for international use
 
 ### Security
-- Configurable HTTP-only cookie support (enabled by default)
+- Configurable HTTP-only cookie support (disabled by default)
 - Configurable SameSite policies
 - Enhanced JWT validation
 - Domain validation
