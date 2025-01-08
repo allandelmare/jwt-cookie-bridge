@@ -16,7 +16,6 @@ JWT Cookie Bridge provides a secure and efficient way to handle JWT tokens from 
 
 Key Features:
 
-* Enhanced secure cookie storage with __Host- prefix
 * Comprehensive token validation and security checks
 * Flexible SameSite policy options (Lax/Strict/None)
 * Advanced debug dashboard with process tracking
@@ -33,7 +32,6 @@ Perfect for:
 * Custom SSO implementations
 
 Security Features:
-* __Host- prefixed cookies
 * HTTP-only cookies
 * Configurable SameSite policies
 * Enhanced token validation
@@ -61,11 +59,11 @@ WordPress 5.0 or higher is required.
 Yes, this plugin requires the Enterprise or higher version of MiniOrange OAuth/OpenID plugin.
 
 = How are the tokens stored? =
-Tokens are stored in secure HTTP-only cookies with __Host- prefix and configurable SameSite policy for enhanced security.
+Tokens are stored in secure HTTP-only cookies and configurable SameSite policy for enhanced security.
 
 = Can I customize the cookie settings? =
 Yes, you can configure:
-* Cookie name (automatically prefixed with __Host-)
+* Cookie name
 * Duration
 * SameSite policy
 * HTTP-only flag
@@ -81,7 +79,6 @@ Yes, enabling debug mode provides access to:
 
 = What security measures are implemented? =
 The plugin implements multiple security layers:
-* __Host- prefixed cookies
 * Secure cookie handling with HTTP-only option
 * Domain validation
 * Token validation
@@ -95,8 +92,7 @@ The plugin implements multiple security layers:
 
 1. Main settings page with enhanced UI
 2. Debug dashboard overview
-3. Token process monitoring
-4. System status display
+3. Cookie example
 
 == Changelog ==
 
