@@ -6,7 +6,8 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 
 - Secure HTTP-only cookie storage for JWT tokens
 - Configurable SameSite policy and cookie settings
-- Debug dashboard for token inspection and management
+- Enhanced debug dashboard with token process tracking
+- Token process monitoring and validation
 - Compatible with MiniOrange OAuth/OpenID Enterprise edition
 - Cookie domain and duration configuration
 
@@ -28,6 +29,14 @@ Access plugin settings via WordPress admin:
 1. Settings → JWT Cookie Bridge
 2. Configure cookie name, duration, and security policies
 3. Enable debug mode if needed
+
+## Debug Features
+
+The debug dashboard provides:
+- Token process status tracking
+- System configuration overview
+- Error log monitoring
+- Token validation status
 
 ## Support
 
