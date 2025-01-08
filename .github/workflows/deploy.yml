@@ -11,6 +11,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Get tag name
+      id: get_tag
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
     - name: Install SVN
       run: |
         sudo apt-get update
@@ -27,14 +31,14 @@ jobs:
         # Create SVN-compatible structure
         mkdir -p svn-repo/trunk
         mkdir -p svn-repo/assets
-        mkdir -p svn-repo/tags/${GITHUB_REF#refs/tags/v}
+        mkdir -p svn-repo/tags/${{ steps.get_tag.outputs.VERSION }}
 
         # Copy plugin files to trunk
         cp -R trunk/* svn-repo/trunk/
         cp -R assets/* svn-repo/assets/
 
         # Create version-specific tag
-        cp -R trunk/* svn-repo/tags/${GITHUB_REF#refs/tags/v}/
+        cp -R trunk/* svn-repo/tags/${{ steps.get_tag.outputs.VERSION }}/
 
     - name: WordPress Plugin Deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
@@ -42,7 +46,7 @@ jobs:
         SVN_USERNAME: ${{ secrets.WORDPRESS_ORG_USERNAME }}
         SVN_PASSWORD: ${{ secrets.WORDPRESS_ORG_PASSWORD }}
         SLUG: jwt-cookie-bridge
-        VERSION: ${GITHUB_REF#refs/tags/v}
+        VERSION: ${{ steps.get_tag.outputs.VERSION }}
         
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
