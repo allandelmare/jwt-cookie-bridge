@@ -4,10 +4,9 @@ Tags: sso, jwt, oauth, authentication, miniorange, keycloak, single sign-on, tok
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
 Securely store and manage JWT tokens from MiniOrange OAuth/OpenID in secure cookies for seamless Single Sign-On (SSO) integration.
 
 == Description ==
@@ -95,6 +94,11 @@ The plugin implements multiple security layers:
 3. View of client side cookie
 
 == Changelog ==
+= 1.0.9 =
+
+Removed WordPress.org deployment configuration
+Changed HTTP-only cookie default to false for JavaScript accessibility
+Updated documentation and deployment configuration
 
 = 1.0.8 =
 * Updated documentation for clarity and accuracy

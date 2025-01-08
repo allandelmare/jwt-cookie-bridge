@@ -3,7 +3,7 @@
  * Plugin Name: JWT Cookie Bridge for MiniOrange SSO
  * Plugin URI: https://github.com/allandelmare/jwt-cookie-bridge
  * Description: Securely stores JWT tokens from MiniOrange OAuth/OpenID in a cookie for seamless SSO integration
- * Version: 1.0.8
+ * Version: 1.0.9
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: Allan Delmare
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Plugin constants
-define('JWT_COOKIE_BRIDGE_VERSION', '1.0.7');
+define('JWT_COOKIE_BRIDGE_VERSION', '1.0.9');
 define('JWT_COOKIE_BRIDGE_MINIMUM_WP_VERSION', '5.0');
 define('JWT_COOKIE_BRIDGE_MINIMUM_PHP_VERSION', '7.4');
 define('JWT_COOKIE_BRIDGE_PLUGIN_DIR', plugin_dir_path(__FILE__));
