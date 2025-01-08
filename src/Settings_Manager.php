@@ -102,7 +102,7 @@ class Settings_Manager {
                 'label' => __('Cookie Name', 'jwt-cookie-bridge'),
                 'type' => 'text',
                 'default' => 'mo_jwt',
-                'description' => __('The name of the cookie that will store the JWT token. This will be prefixed with "__Host-" for enhanced security.', 'jwt-cookie-bridge')
+                'description' => __('The name of the cookie that will store the JWT token.', 'jwt-cookie-bridge')
             ],
             'cookie_duration' => [
                 'label' => __('Cookie Duration', 'jwt-cookie-bridge'),
