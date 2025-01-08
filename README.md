@@ -1,6 +1,6 @@
 # JWT Cookie Bridge for MiniOrange SSO
 
-A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID in HTTP-only cookies for seamless SSO integration. Designed for WordPress sites requiring secure token management in multi-application environments.
+A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID in secure cookies for seamless SSO integration. Designed for WordPress sites requiring secure token management in multi-application environments.
 
 ## Features
 
@@ -12,7 +12,7 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Translation-ready for international use
 
 ### Security
-- HTTP-only cookie support with __Host- prefix
+- Configurable HTTP-only cookie support (enabled by default)
 - Configurable SameSite policies
 - Enhanced JWT validation
 - Domain validation
@@ -56,15 +56,15 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 ### Core Settings
 1. Navigate to Settings → JWT Cookie Bridge
 2. Configure essential parameters:
-   - Cookie name (prefixed with __Host-)
+   - Cookie name
    - Cookie duration
    - SameSite policy
-   - HTTP-only flag
+   - HTTP-only setting
    - Debug mode
 
 ### Security Settings
 - Choose appropriate SameSite policy based on your domain structure
-- Enable HTTP-only flag for enhanced security
+- Configure HTTP-only setting based on your requirements
 - Configure cookie duration based on session requirements
 - Set up proper cookie domain settings
 
@@ -78,7 +78,7 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 ## Development
 
 ### Current Version
-- Version: 1.0.7
+- Version: 1.0.8
 - Requires WordPress: 5.0+
 - Requires PHP: 7.4+
 
@@ -106,9 +106,8 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 ## Security Considerations
 
 ### Cookie Security
-- Uses __Host- prefix for enhanced security
+- Configurable HTTP-only setting
 - Configurable SameSite policy
-- HTTP-only by default
 - Domain validation
 - Token validation
 - Secure flag required
@@ -131,6 +130,13 @@ Developed by Allan Delmare for seamless integration between WordPress and extern
 
 ## Changelog
 
+### Version 1.0.8
+- Updated documentation for clarity and accuracy
+- Enhanced plugin repository structure
+- Added comprehensive screenshots and banners
+- Updated deployment configuration
+- Improved security documentation
+
 ### Version 1.0.7.2
 - Fixed cookie domain handling for cross-domain compatibility
 - Enhanced domain validation for subdomain support
@@ -140,7 +146,6 @@ Developed by Allan Delmare for seamless integration between WordPress and extern
 
 ### Version 1.0.7
 - Enhanced JWT token validation and security
-- Added __Host- prefix to cookies
 - Improved error handling and logging
 - Enhanced settings page UI and help text
 - Added token refresh handling

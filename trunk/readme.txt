@@ -4,11 +4,11 @@ Tags: sso, jwt, oauth, authentication, miniorange, keycloak, single sign-on, tok
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Securely store and manage JWT tokens from MiniOrange OAuth/OpenID in HTTP-only cookies for seamless Single Sign-On (SSO) integration.
+Securely store and manage JWT tokens from MiniOrange OAuth/OpenID in secure cookies for seamless Single Sign-On (SSO) integration.
 
 == Description ==
 
@@ -32,7 +32,7 @@ Perfect for:
 * Custom SSO implementations
 
 Security Features:
-* HTTP-only cookies
+* Configurable HTTP-only cookies (enabled by default)
 * Configurable SameSite policies
 * Enhanced token validation
 * Domain validation
@@ -59,14 +59,14 @@ WordPress 5.0 or higher is required.
 Yes, this plugin requires the Enterprise or higher version of MiniOrange OAuth/OpenID plugin.
 
 = How are the tokens stored? =
-Tokens are stored in secure HTTP-only cookies and configurable SameSite policy for enhanced security.
+Tokens are stored in secure cookies with configurable settings including HTTP-only flag and SameSite policy for enhanced security.
 
 = Can I customize the cookie settings? =
 Yes, you can configure:
 * Cookie name
 * Duration
 * SameSite policy
-* HTTP-only flag
+* HTTP-only setting (enabled by default)
 * Security options
 
 = Is debug logging available? =
@@ -79,7 +79,7 @@ Yes, enabling debug mode provides access to:
 
 = What security measures are implemented? =
 The plugin implements multiple security layers:
-* Secure cookie handling with HTTP-only option
+* Configurable HTTP-only cookies
 * Domain validation
 * Token validation
 * Configurable SameSite policies
@@ -90,30 +90,36 @@ The plugin implements multiple security layers:
 
 == Screenshots ==
 
-1. Main settings page with enhanced UI
-2. Debug dashboard overview
-3. Cookie example
+1. Main settings page with cookie configuration options
+2. Debug dashboard showing token status and system information
+3. View of client side cookie
 
 == Changelog ==
+
+= 1.0.8 =
+* Updated documentation for clarity and accuracy
+* Enhanced plugin repository structure
+* Added comprehensive screenshots and banners
+* Updated deployment configuration
+* Improved security documentation
 
 = 1.0.7.2 =
 * Fixed cookie domain handling for cross-domain compatibility
 * Enhanced domain validation for subdomain support
 
 = 1.0.7.1 =
-* Important fix for cookie domain handling. Upgrade recommended for all users using cross-domain SSO.
+* Fixed .yml packager
 
 = 1.0.7 =
-* Added __Host- prefix to cookies for enhanced security
-* Enhanced JWT token validation and security checks
+* Enhanced JWT token validation and security
 * Improved error handling and logging
-* Enhanced settings page UI with detailed help text
+* Enhanced settings page UI and help text
 * Added token refresh handling
 * Improved debug dashboard functionality
 * Added log clearing capability
 * Added domain validation
 * Enhanced security checks
-* Improved input validation and sanitization
+* Improved input validation
 
 = 1.0.6 =
 * Initial release with basic functionality
@@ -121,3 +127,8 @@ The plugin implements multiple security layers:
 == Privacy Notice ==
 
 This plugin handles authentication tokens but does not store any personal user data. All tokens are stored client-side in cookies with configurable security settings.
+
+== Upgrade Notice ==
+
+= 1.0.8 =
+Documentation update and repository structure enhancement. Recommended for all users.
