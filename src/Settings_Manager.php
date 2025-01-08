@@ -12,13 +12,22 @@ class Settings_Manager {
     public function __construct() {
         add_action('admin_menu', [$this, 'add_settings_menu']);
         add_action('admin_init', [$this, 'register_settings']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_styles']);
     }
 
-    /**
-     * Load plugin options
-     *
-     * @return array Plugin options
-     */
+    public function enqueue_admin_styles($hook): void {
+        if ($hook !== 'settings_page_jwt-cookie-bridge') {
+            return;
+        }
+
+        wp_enqueue_style(
+            'jwt-cookie-bridge-admin',
+            JWT_COOKIE_BRIDGE_PLUGIN_URL . 'assets/css/admin.css',
+            [],
+            JWT_COOKIE_BRIDGE_VERSION
+        );
+    }
+
     private static function load_options(): array {
         if (self::$options === null) {
             self::$options = wp_parse_args(
@@ -35,9 +44,6 @@ class Settings_Manager {
         return self::$options;
     }
 
-    /**
-     * Add settings page to WordPress admin
-     */
     public function add_settings_menu(): void {
         add_options_page(
             __('JWT Cookie Bridge Settings', 'jwt-cookie-bridge'),
@@ -48,9 +54,6 @@ class Settings_Manager {
         );
     }
 
-    /**
-     * Register plugin settings
-     */
     public function register_settings(): void {
         register_setting(
             self::OPTION_NAME,
@@ -71,43 +74,69 @@ class Settings_Manager {
         add_settings_section(
             'jwt_cookie_bridge_main',
             __('Cookie Settings', 'jwt-cookie-bridge'),
-            null,
+            [$this, 'render_settings_description'],
             'jwt-cookie-bridge'
         );
 
         $this->add_settings_fields();
     }
 
-    /**
-     * Add settings fields to the form
-     */
+    public function render_settings_description(): void {
+        ?>
+        <div class="jwt-settings-description">
+            <p>
+                <?php esc_html_e('Configure how JWT tokens from your Identity Provider are stored and managed in browser cookies.', 'jwt-cookie-bridge'); ?>
+            </p>
+            <div class="notice notice-info inline">
+                <p>
+                    <?php esc_html_e('These settings affect how your single sign-on (SSO) solution works across different domains and applications. Make sure to coordinate these settings with your security requirements.', 'jwt-cookie-bridge'); ?>
+                </p>
+            </div>
+        </div>
+        <?php
+    }
+
     private function add_settings_fields(): void {
         $fields = [
             'cookie_name' => [
                 'label' => __('Cookie Name', 'jwt-cookie-bridge'),
                 'type' => 'text',
-                'default' => 'mo_jwt'
+                'default' => 'mo_jwt',
+                'description' => __('The name of the cookie that will store the JWT token. This will be prefixed with "__Host-" for enhanced security.', 'jwt-cookie-bridge')
             ],
             'cookie_duration' => [
-                'label' => __('Cookie Duration (seconds)', 'jwt-cookie-bridge'),
+                'label' => __('Cookie Duration', 'jwt-cookie-bridge'),
                 'type' => 'number',
-                'default' => 3600
+                'default' => 3600,
+                'description' => __('How long (in seconds) the cookie should persist. Default is 3600 (1 hour). Should align with your token expiration time.', 'jwt-cookie-bridge')
             ],
             'samesite_policy' => [
                 'label' => __('SameSite Policy', 'jwt-cookie-bridge'),
                 'type' => 'select',
                 'options' => self::VALID_SAMESITE_VALUES,
-                'default' => 'Lax'
+                'default' => 'Lax',
+                'description' => sprintf(
+                    '%s<br><br><strong>%s</strong> %s<br><strong>%s</strong> %s<br><strong>%s</strong> %s',
+                    __('Controls how the cookie behaves in cross-site browsing contexts:', 'jwt-cookie-bridge'),
+                    __('Lax:', 'jwt-cookie-bridge'),
+                    __('Cookies are sent on GET requests to your domain. Best for most cases.', 'jwt-cookie-bridge'),
+                    __('Strict:', 'jwt-cookie-bridge'),
+                    __('Cookies only sent to your domain. Most secure but may break some functionality.', 'jwt-cookie-bridge'),
+                    __('None:', 'jwt-cookie-bridge'),
+                    __('Cookies sent everywhere. Requires secure context (HTTPS). Least secure.', 'jwt-cookie-bridge')
+                )
             ],
             'http_only' => [
-                'label' => __('HTTP Only Cookie', 'jwt-cookie-bridge'),
+                'label' => __('HTTP Only', 'jwt-cookie-bridge'),
                 'type' => 'checkbox',
-                'default' => true
+                'default' => true,
+                'description' => __('When enabled, prevents JavaScript access to the cookie. Highly recommended for security.', 'jwt-cookie-bridge')
             ],
             'debug_mode' => [
                 'label' => __('Debug Mode', 'jwt-cookie-bridge'),
                 'type' => 'checkbox',
-                'default' => false
+                'default' => false,
+                'description' => __('Enables detailed logging and the debug dashboard. Only enable temporarily for troubleshooting.', 'jwt-cookie-bridge')
             ]
         ];
 
@@ -121,38 +150,52 @@ class Settings_Manager {
                 [
                     'field' => $key,
                     'options' => $field['options'] ?? null,
-                    'default' => $field['default']
+                    'default' => $field['default'],
+                    'description' => $field['description']
                 ]
             );
         }
     }
 
-    /**
-     * Render settings page
-     */
     public function render_settings_page(): void {
         if (!current_user_can('manage_options')) {
             wp_die(__('You do not have sufficient permissions to access this page.', 'jwt-cookie-bridge'));
         }
         ?>
-        <div class="wrap">
+        <div class="wrap jwt-settings-wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
-            <form action="options.php" method="post">
-                <?php
-                settings_fields(self::OPTION_NAME);
-                do_settings_sections('jwt-cookie-bridge');
-                submit_button(__('Save Settings', 'jwt-cookie-bridge'));
-                ?>
-            </form>
+            
+            <div class="jwt-settings-container">
+                <form action="options.php" method="post">
+                    <?php
+                    settings_fields(self::OPTION_NAME);
+                    do_settings_sections('jwt-cookie-bridge');
+                    submit_button(__('Save Settings', 'jwt-cookie-bridge'));
+                    ?>
+                </form>
+
+                <div class="jwt-settings-sidebar">
+                    <div class="jwt-help-widget">
+                        <h3><?php esc_html_e('Need Help?', 'jwt-cookie-bridge'); ?></h3>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/allandelmare/jwt-cookie-bridge/wiki" target="_blank">
+                                    <?php esc_html_e('Documentation', 'jwt-cookie-bridge'); ?> →
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/allandelmare/jwt-cookie-bridge/issues" target="_blank">
+                                    <?php esc_html_e('Report Issues', 'jwt-cookie-bridge'); ?> →
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
         <?php
     }
 
-    /**
-     * Render text field
-     *
-     * @param array $args Field arguments
-     */
     public function render_text_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
@@ -161,14 +204,12 @@ class Settings_Manager {
                name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
                value="<?php echo esc_attr($value); ?>"
                class="regular-text">
+        <?php if (!empty($args['description'])): ?>
+            <p class="description"><?php echo wp_kses_post($args['description']); ?></p>
+        <?php endif; ?>
         <?php
     }
 
-    /**
-     * Render number field
-     *
-     * @param array $args Field arguments
-     */
     public function render_number_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
@@ -176,20 +217,21 @@ class Settings_Manager {
         <input type="number"
                name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
                value="<?php echo esc_attr($value); ?>"
-               class="regular-text">
+               class="regular-text"
+               min="0"
+               step="1">
+        <?php if (!empty($args['description'])): ?>
+            <p class="description"><?php echo wp_kses_post($args['description']); ?></p>
+        <?php endif; ?>
         <?php
     }
 
-    /**
-     * Render select field
-     *
-     * @param array $args Field arguments
-     */
     public function render_select_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
         ?>
-        <select name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>">
+        <select name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>" 
+                class="regular-text">
             <?php foreach ($args['options'] as $option): ?>
                 <option value="<?php echo esc_attr($option); ?>"
                         <?php selected($value, $option); ?>>
@@ -197,31 +239,29 @@ class Settings_Manager {
                 </option>
             <?php endforeach; ?>
         </select>
+        <?php if (!empty($args['description'])): ?>
+            <p class="description"><?php echo wp_kses_post($args['description']); ?></p>
+        <?php endif; ?>
         <?php
     }
 
-    /**
-     * Render checkbox field
-     *
-     * @param array $args Field arguments
-     */
     public function render_checkbox_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
         ?>
-        <input type="checkbox"
-               name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
-               <?php checked($value, true); ?>
-               value="1">
+        <label class="jwt-toggle">
+            <input type="checkbox"
+                   name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
+                   <?php checked($value, true); ?>
+                   value="1">
+            <span class="jwt-toggle-slider"></span>
+        </label>
+        <?php if (!empty($args['description'])): ?>
+            <p class="description"><?php echo wp_kses_post($args['description']); ?></p>
+        <?php endif; ?>
         <?php
     }
 
-    /**
-     * Sanitize settings
-     *
-     * @param array $input Settings input
-     * @return array Sanitized settings
-     */
     public function sanitize_settings(array $input): array {
         $sanitized = [];
         
@@ -246,7 +286,6 @@ class Settings_Manager {
     }
 
     // Static getter methods
-
     public static function is_debug_enabled(): bool {
         $options = self::load_options();
         return (bool) ($options['debug_mode'] ?? false);

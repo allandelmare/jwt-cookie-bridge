@@ -4,7 +4,7 @@ Tags: sso, jwt, oauth, authentication, miniorange, keycloak, single sign-on, tok
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,12 +16,13 @@ JWT Cookie Bridge provides a secure and efficient way to handle JWT tokens from 
 
 Key Features:
 
-* Secure HTTP-only cookie storage with configurable settings
+* Enhanced secure cookie storage with __Host- prefix
+* Comprehensive token validation and security checks
 * Flexible SameSite policy options (Lax/Strict/None)
-* Comprehensive token validation and monitoring
 * Advanced debug dashboard with process tracking
 * Translation-ready for international use
 * Detailed error logging and system status reporting
+* Domain validation and security checks
 * Compatible with MiniOrange OAuth/OpenID Enterprise edition
 
 Perfect for:
@@ -32,13 +33,15 @@ Perfect for:
 * Custom SSO implementations
 
 Security Features:
-* Secure cookie handling with HTTP-only option
+* __Host- prefixed cookies
+* HTTP-only cookies
 * Configurable SameSite policies
+* Enhanced token validation
+* Domain validation
 * Input validation and sanitization
 * Output escaping
 * Capability checking
 * Nonce verification
-* Token validation checks
 
 == Installation ==
 
@@ -58,11 +61,11 @@ WordPress 5.0 or higher is required.
 Yes, this plugin requires the Enterprise or higher version of MiniOrange OAuth/OpenID plugin.
 
 = How are the tokens stored? =
-Tokens are stored in secure HTTP-only cookies with configurable SameSite policy for enhanced security.
+Tokens are stored in secure HTTP-only cookies with __Host- prefix and configurable SameSite policy for enhanced security.
 
 = Can I customize the cookie settings? =
 Yes, you can configure:
-* Cookie name
+* Cookie name (automatically prefixed with __Host-)
 * Duration
 * SameSite policy
 * HTTP-only flag
@@ -74,56 +77,48 @@ Yes, enabling debug mode provides access to:
 * System status overview
 * Error logging
 * Token validation status
+* Log clearing functionality
 
 = What security measures are implemented? =
 The plugin implements multiple security layers:
+* __Host- prefixed cookies
 * Secure cookie handling with HTTP-only option
+* Domain validation
+* Token validation
 * Configurable SameSite policies
 * Input validation and sanitization
 * Output escaping
 * Capability checking
 * Nonce verification
-* Token validation
-
-= How do I report issues or request features? =
-You can:
-* Use the WordPress.org plugin support forum
-* Submit issues on our GitHub repository
-* Contact us through our support channels
 
 == Screenshots ==
 
-1. Main settings page
+1. Main settings page with enhanced UI
 2. Debug dashboard overview
 3. Token process monitoring
 4. System status display
 
 == Changelog ==
 
-= 1.0.6 =
-* Added comprehensive translation support
-* Enhanced security validation for token handling
+= 1.0.7 =
+* Added __Host- prefix to cookies for enhanced security
+* Enhanced JWT token validation and security checks
 * Improved error handling and logging
-* Added detailed system configuration overview
-* Implemented token process monitoring
-* Updated cookie handling for enhanced security
-* Added support for additional SameSite policies
+* Enhanced settings page UI with detailed help text
+* Added token refresh handling
 * Improved debug dashboard functionality
-* Enhanced WordPress coding standards compliance
-* Added security checks for all admin operations
-* Implemented proper capability checking
-* Enhanced input validation and sanitization
+* Added log clearing capability
+* Added domain validation
+* Enhanced security checks
+* Improved input validation and sanitization
 
-= 1.0.5 =
+= 1.0.6 =
 * Initial release with basic functionality
-* Basic cookie management
-* Simple debug features
-* Core token handling
 
 == Upgrade Notice ==
 
-= 1.0.6 =
-Important security and functionality improvements including enhanced token validation, improved error handling, and better cookie security. Upgrade recommended for all users.
+= 1.0.7 =
+Important security and functionality improvements including enhanced token validation, improved cookie security with __Host- prefix, and better UI. Upgrade recommended for all users.
 
 == Privacy Notice ==
 

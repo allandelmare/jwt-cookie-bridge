@@ -8,17 +8,19 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Secure cookie storage for JWT tokens with configurable settings
 - Flexible SameSite policy support (Lax/Strict/None)
 - Configurable cookie duration and attributes
-- Token validation and security checks
+- Enhanced token validation and security checks
 - Translation-ready for international use
 
 ### Security
-- HTTP-only cookie support
+- HTTP-only cookie support with __Host- prefix
 - Configurable SameSite policies
+- Enhanced JWT validation
+- Domain validation
+- Token refresh handling
 - Input validation and sanitization
 - Output escaping
 - Capability checking
 - Nonce verification
-- Token validation checks
 
 ### Debug & Monitoring
 - Enhanced debug dashboard
@@ -27,6 +29,7 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Comprehensive error logging
 - Token validation status
 - Process monitoring tools
+- Log clearing functionality
 
 ## Requirements
 
@@ -50,10 +53,10 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 
 ## Configuration
 
-### Basic Settings
+### Core Settings
 1. Navigate to Settings → JWT Cookie Bridge
-2. Configure core settings:
-   - Cookie name (default: mo_jwt)
+2. Configure essential parameters:
+   - Cookie name (prefixed with __Host-)
    - Cookie duration
    - SameSite policy
    - HTTP-only flag
@@ -62,30 +65,20 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 ### Security Settings
 - Choose appropriate SameSite policy based on your domain structure
 - Enable HTTP-only flag for enhanced security
-- Configure cookie duration based on your session requirements
+- Configure cookie duration based on session requirements
 - Set up proper cookie domain settings
 
-### Debug Configuration
+### Debug Features
 - Enable debug mode for monitoring
 - Access debug dashboard for system status
 - Monitor token processing
 - Track cookie operations
-- View error logs
-
-## Debug Features
-
-The debug dashboard provides:
-- Token process status tracking
-- System configuration overview
-- Error log monitoring
-- Token reset functionality
-- Cookie status monitoring
-- System health checks
+- View and clear error logs
 
 ## Development
 
 ### Current Version
-- Version: 1.0.6
+- Version: 1.0.7
 - Requires WordPress: 5.0+
 - Requires PHP: 7.4+
 
@@ -113,11 +106,12 @@ The debug dashboard provides:
 ## Security Considerations
 
 ### Cookie Security
-- Always use HTTPS
-- Configure appropriate SameSite policy
-- Enable HTTP-only when possible
-- Set secure flag on cookies
-- Implement proper token validation
+- Uses __Host- prefix for enhanced security
+- Configurable SameSite policy
+- HTTP-only by default
+- Domain validation
+- Token validation
+- Secure flag required
 
 ### Best Practices
 - Regular updates
@@ -137,19 +131,18 @@ Developed by Allan Delmare for seamless integration between WordPress and extern
 
 ## Changelog
 
-### Version 1.0.6
-- Added translation support
-- Enhanced security validation
-- Improved error handling
-- Added system configuration overview
-- Added token process monitoring
-- Updated cookie handling
-- Improved debug features
+### Version 1.0.7
+- Enhanced JWT token validation and security
+- Added __Host- prefix to cookies
+- Improved error handling and logging
+- Enhanced settings page UI and help text
+- Added token refresh handling
+- Improved debug dashboard functionality
+- Added log clearing capability
+- Added domain validation
 - Enhanced security checks
-- Added capability verification
 - Improved input validation
 
-### Version 1.0.5
+### Version 1.0.6
 - Initial release
 - Basic functionality
-- Core features
