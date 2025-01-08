@@ -1,85 +1,143 @@
 <?php
 namespace JWTCookieBridge;
 
+/**
+ * Handles JWT token processing and validation
+ */
 class Token_Handler {
     private const TRANSIENT_KEY = 'jwt_bridge_token_status';
+    private const MIN_TOKEN_LENGTH = 32;
 
     public function __construct() {
-        add_action('mo_oauth_logged_in_user_token', array($this, 'handle_sso_token'), 10, 2);
+        add_action('mo_oauth_logged_in_user_token', [$this, 'handle_sso_token'], 10, 2);
     }
 
-    public function handle_sso_token($user, $token) {
-        if (Settings_Manager::is_debug_enabled()) {
-            $status = [
-                'timestamp' => current_time('timestamp'),
-                'hook_triggered' => true,
-                'user_valid' => (bool)$user,
-                'token_received' => (bool)$token,
-                'token_valid' => false,
-                'cookie_set' => false
-            ];
-        }
+    /**
+     * Process SSO token from MiniOrange
+     *
+     * @param \WP_User|bool $user WordPress user object
+     * @param array|bool $token Token data from OAuth provider
+     */
+    public function handle_sso_token($user, $token): void {
+        $status = $this->initialize_status();
 
-        if (!$user || !$token || !is_array($token)) {
-            error_log('JWT Cookie Bridge: Invalid user or token data received');
-            if (Settings_Manager::is_debug_enabled()) {
-                set_transient(self::TRANSIENT_KEY, $status);
-            }
+        if (!$user instanceof \WP_User || !is_array($token)) {
+            $this->log_error('Invalid user or token data received');
+            $this->save_status($status);
             return;
         }
 
         if (!$this->validate_token($token)) {
-            error_log('JWT Cookie Bridge: Token validation failed');
-            if (Settings_Manager::is_debug_enabled()) {
-                set_transient(self::TRANSIENT_KEY, $status);
-            }
+            $this->log_error('Token validation failed');
+            $this->save_status($status);
             return;
         }
 
-        if (Settings_Manager::is_debug_enabled()) {
-            $status['token_valid'] = true;
+        $status['token_valid'] = true;
+        $access_token = $token['access_token'] ?? null;
+
+        if (!$access_token) {
+            $this->log_error('Access token missing from token data');
+            $this->save_status($status);
+            return;
         }
 
         try {
             $cookie_manager = new Cookie_Manager();
-            $access_token = $token['access_token'] ?? null;
+            $result = $cookie_manager->set_token_cookie($access_token);
+            $status['cookie_set'] = $result;
             
-            if ($access_token) {
-                $result = $cookie_manager->set_token_cookie($access_token);
-                if (Settings_Manager::is_debug_enabled()) {
-                    $status['cookie_set'] = $result;
-                }
-                error_log('JWT Cookie Bridge: Cookie set result: ' . ($result ? 'success' : 'failed'));
-            }
-
+            $this->log_error('Cookie set result: ' . ($result ? 'success' : 'failed'));
         } catch (\Exception $e) {
-            error_log('JWT Cookie Bridge: Error handling SSO token: ' . $e->getMessage());
+            $this->log_error('Error handling SSO token: ' . $e->getMessage());
+            $status['cookie_set'] = false;
         }
 
+        $this->save_status($status);
+    }
+
+    /**
+     * Initialize token status array
+     *
+     * @return array Status array
+     */
+    private function initialize_status(): array {
+        if (!Settings_Manager::is_debug_enabled()) {
+            return [];
+        }
+
+        return [
+            'timestamp' => time(),
+            'hook_triggered' => true,
+            'user_valid' => false,
+            'token_received' => false,
+            'token_valid' => false,
+            'cookie_set' => false
+        ];
+    }
+
+    /**
+     * Save token status to transient
+     *
+     * @param array $status Status data
+     */
+    private function save_status(array $status): void {
         if (Settings_Manager::is_debug_enabled()) {
-            set_transient(self::TRANSIENT_KEY, $status);
+            set_transient(self::TRANSIENT_KEY, $status, DAY_IN_SECONDS);
         }
     }
 
-    private function validate_token($token) {
-        if (!isset($token['access_token']) || empty($token['access_token'])) {
-            error_log('JWT Cookie Bridge: Token validation failed: missing access_token');
+    /**
+     * Log error message with plugin prefix
+     *
+     * @param string $message Error message
+     */
+    private function log_error(string $message): void {
+        error_log('JWT Cookie Bridge: ' . $message);
+    }
+
+    /**
+     * Validate token structure and contents
+     *
+     * @param array $token Token data to validate
+     * @return bool Validation result
+     */
+    private function validate_token(array $token): bool {
+        if (!isset($token['access_token']) || !is_string($token['access_token'])) {
+            $this->log_error('Invalid access_token format');
             return false;
         }
 
-        if (!is_string($token['access_token']) || strlen($token['access_token']) < 32) {
-            error_log('JWT Cookie Bridge: Token validation failed: invalid access_token format');
+        $access_token = $token['access_token'];
+
+        if (strlen($access_token) < self::MIN_TOKEN_LENGTH) {
+            $this->log_error('Token length below minimum requirement');
+            return false;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $access_token)) {
+            $this->log_error('Token contains invalid characters');
             return false;
         }
 
         return true;
     }
 
-    public static function get_token_status() {
+    /**
+     * Get current token process status
+     *
+     * @return array Status data
+     */
+    public static function get_token_status(): array {
         return get_transient(self::TRANSIENT_KEY) ?: [];
     }
 
-    public function get_current_token_data() {
+    /**
+     * Get current user's token
+     *
+     * @return string|null Token or null if not found
+     */
+    public function get_current_token_data(): ?string {
         if (!is_user_logged_in()) {
             return null;
         }

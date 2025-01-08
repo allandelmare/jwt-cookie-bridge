@@ -1,105 +1,138 @@
 <?php
 namespace JWTCookieBridge;
 
+/**
+ * Manages plugin settings and options
+ */
 class Settings_Manager {
-    private static $options = null;
     private const OPTION_NAME = 'jwt_cookie_bridge_options';
+    private static $options = null;
+    private const VALID_SAMESITE_VALUES = ['Lax', 'Strict', 'None'];
 
     public function __construct() {
         add_action('admin_menu', [$this, 'add_settings_menu']);
         add_action('admin_init', [$this, 'register_settings']);
     }
 
-    private static function load_options() {
+    /**
+     * Load plugin options
+     *
+     * @return array Plugin options
+     */
+    private static function load_options(): array {
         if (self::$options === null) {
-            self::$options = get_option(self::OPTION_NAME, [
-                'debug_mode' => false,
-                'samesite_policy' => 'Lax',
-                'http_only' => true,
-                'cookie_name' => 'mo_jwt',
-                'cookie_duration' => 3600,
-                'allowed_domains' => ''
-            ]);
+            self::$options = wp_parse_args(
+                get_option(self::OPTION_NAME, []),
+                [
+                    'debug_mode' => false,
+                    'samesite_policy' => 'Lax',
+                    'http_only' => true,
+                    'cookie_name' => 'mo_jwt',
+                    'cookie_duration' => 3600,
+                ]
+            );
         }
         return self::$options;
     }
 
-    public function add_settings_menu() {
+    /**
+     * Add settings page to WordPress admin
+     */
+    public function add_settings_menu(): void {
         add_options_page(
-            'JWT Cookie Bridge Settings',
-            'JWT Cookie Bridge',
+            __('JWT Cookie Bridge Settings', 'jwt-cookie-bridge'),
+            __('JWT Cookie Bridge', 'jwt-cookie-bridge'),
             'manage_options',
             'jwt-cookie-bridge',
             [$this, 'render_settings_page']
         );
     }
 
-    public function register_settings() {
-        register_setting(self::OPTION_NAME, self::OPTION_NAME, [
-            'type' => 'array',
-            'sanitize_callback' => [$this, 'sanitize_settings']
-        ]);
+    /**
+     * Register plugin settings
+     */
+    public function register_settings(): void {
+        register_setting(
+            self::OPTION_NAME,
+            self::OPTION_NAME,
+            [
+                'type' => 'array',
+                'sanitize_callback' => [$this, 'sanitize_settings'],
+                'default' => [
+                    'debug_mode' => false,
+                    'samesite_policy' => 'Lax',
+                    'http_only' => true,
+                    'cookie_name' => 'mo_jwt',
+                    'cookie_duration' => 3600,
+                ]
+            ]
+        );
 
         add_settings_section(
             'jwt_cookie_bridge_main',
-            'Cookie Settings',
+            __('Cookie Settings', 'jwt-cookie-bridge'),
             null,
             'jwt-cookie-bridge'
         );
 
-        add_settings_field(
-            'cookie_name',
-            'Cookie Name',
-            [$this, 'render_text_field'],
-            'jwt-cookie-bridge',
-            'jwt_cookie_bridge_main',
-            ['field' => 'cookie_name', 'default' => 'mo_jwt']
-        );
-
-        add_settings_field(
-            'cookie_duration',
-            'Cookie Duration (seconds)',
-            [$this, 'render_number_field'],
-            'jwt-cookie-bridge',
-            'jwt_cookie_bridge_main',
-            ['field' => 'cookie_duration', 'default' => 3600]
-        );
-
-        add_settings_field(
-            'samesite_policy',
-            'SameSite Policy',
-            [$this, 'render_select_field'],
-            'jwt-cookie-bridge',
-            'jwt_cookie_bridge_main',
-            [
-                'field' => 'samesite_policy',
-                'options' => ['Lax' => 'Lax', 'Strict' => 'Strict', 'None' => 'None'],
-                'default' => 'Lax'
-            ]
-        );
-
-        add_settings_field(
-            'http_only',
-            'HTTP Only Cookie',
-            [$this, 'render_checkbox_field'],
-            'jwt-cookie-bridge',
-            'jwt_cookie_bridge_main',
-            ['field' => 'http_only', 'default' => true]
-        );
-
-        add_settings_field(
-            'debug_mode',
-            'Debug Mode',
-            [$this, 'render_checkbox_field'],
-            'jwt-cookie-bridge',
-            'jwt_cookie_bridge_main',
-            ['field' => 'debug_mode', 'default' => false]
-        );
+        $this->add_settings_fields();
     }
 
-    public function render_settings_page() {
+    /**
+     * Add settings fields to the form
+     */
+    private function add_settings_fields(): void {
+        $fields = [
+            'cookie_name' => [
+                'label' => __('Cookie Name', 'jwt-cookie-bridge'),
+                'type' => 'text',
+                'default' => 'mo_jwt'
+            ],
+            'cookie_duration' => [
+                'label' => __('Cookie Duration (seconds)', 'jwt-cookie-bridge'),
+                'type' => 'number',
+                'default' => 3600
+            ],
+            'samesite_policy' => [
+                'label' => __('SameSite Policy', 'jwt-cookie-bridge'),
+                'type' => 'select',
+                'options' => self::VALID_SAMESITE_VALUES,
+                'default' => 'Lax'
+            ],
+            'http_only' => [
+                'label' => __('HTTP Only Cookie', 'jwt-cookie-bridge'),
+                'type' => 'checkbox',
+                'default' => true
+            ],
+            'debug_mode' => [
+                'label' => __('Debug Mode', 'jwt-cookie-bridge'),
+                'type' => 'checkbox',
+                'default' => false
+            ]
+        ];
+
+        foreach ($fields as $key => $field) {
+            add_settings_field(
+                $key,
+                $field['label'],
+                [$this, 'render_' . $field['type'] . '_field'],
+                'jwt-cookie-bridge',
+                'jwt_cookie_bridge_main',
+                [
+                    'field' => $key,
+                    'options' => $field['options'] ?? null,
+                    'default' => $field['default']
+                ]
+            );
+        }
+    }
+
+    /**
+     * Render settings page
+     */
+    public function render_settings_page(): void {
         if (!current_user_can('manage_options')) {
-            return;
+            wp_die(__('You do not have sufficient permissions to access this page.', 'jwt-cookie-bridge'));
         }
         ?>
         <div class="wrap">
@@ -108,46 +141,88 @@ class Settings_Manager {
                 <?php
                 settings_fields(self::OPTION_NAME);
                 do_settings_sections('jwt-cookie-bridge');
-                submit_button('Save Settings');
+                submit_button(__('Save Settings', 'jwt-cookie-bridge'));
                 ?>
             </form>
         </div>
         <?php
     }
 
-    public function render_text_field($args) {
+    /**
+     * Render text field
+     *
+     * @param array $args Field arguments
+     */
+    public function render_text_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
-        echo '<input type="text" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
-             '" value="' . esc_attr($value) . '" class="regular-text">';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
+               value="<?php echo esc_attr($value); ?>"
+               class="regular-text">
+        <?php
     }
 
-    public function render_number_field($args) {
+    /**
+     * Render number field
+     *
+     * @param array $args Field arguments
+     */
+    public function render_number_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
-        echo '<input type="number" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
-             '" value="' . esc_attr($value) . '" class="regular-text">';
+        ?>
+        <input type="number"
+               name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
+               value="<?php echo esc_attr($value); ?>"
+               class="regular-text">
+        <?php
     }
 
-    public function render_select_field($args) {
+    /**
+     * Render select field
+     *
+     * @param array $args Field arguments
+     */
+    public function render_select_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
-        echo '<select name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . '">';
-        foreach ($args['options'] as $key => $label) {
-            echo '<option value="' . esc_attr($key) . '"' . selected($value, $key, false) . '>' . 
-                 esc_html($label) . '</option>';
-        }
-        echo '</select>';
+        ?>
+        <select name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>">
+            <?php foreach ($args['options'] as $option): ?>
+                <option value="<?php echo esc_attr($option); ?>"
+                        <?php selected($value, $option); ?>>
+                    <?php echo esc_html($option); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <?php
     }
 
-    public function render_checkbox_field($args) {
+    /**
+     * Render checkbox field
+     *
+     * @param array $args Field arguments
+     */
+    public function render_checkbox_field(array $args): void {
         $options = self::load_options();
         $value = $options[$args['field']] ?? $args['default'];
-        echo '<input type="checkbox" name="' . esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']') . 
-             '" ' . checked($value, true, false) . ' value="1">';
+        ?>
+        <input type="checkbox"
+               name="<?php echo esc_attr(self::OPTION_NAME . '[' . $args['field'] . ']'); ?>"
+               <?php checked($value, true); ?>
+               value="1">
+        <?php
     }
 
-    public function sanitize_settings($input) {
+    /**
+     * Sanitize settings
+     *
+     * @param array $input Settings input
+     * @return array Sanitized settings
+     */
+    public function sanitize_settings(array $input): array {
         $sanitized = [];
         
         if (isset($input['cookie_name'])) {
@@ -159,40 +234,42 @@ class Settings_Manager {
         }
         
         if (isset($input['samesite_policy'])) {
-            $sanitized['samesite_policy'] = in_array($input['samesite_policy'], ['Lax', 'Strict', 'None']) 
-                ? $input['samesite_policy'] 
+            $sanitized['samesite_policy'] = in_array($input['samesite_policy'], self::VALID_SAMESITE_VALUES, true)
+                ? $input['samesite_policy']
                 : 'Lax';
         }
         
-        $sanitized['http_only'] = isset($input['http_only']);
-        $sanitized['debug_mode'] = isset($input['debug_mode']);
+        $sanitized['http_only'] = !empty($input['http_only']);
+        $sanitized['debug_mode'] = !empty($input['debug_mode']);
         
         return $sanitized;
     }
 
-    // Static getter methods for settings
+    // Static getter methods
+
     public static function is_debug_enabled(): bool {
         $options = self::load_options();
-        return $options['debug_mode'] ?? false;
+        return (bool) ($options['debug_mode'] ?? false);
     }
 
     public static function get_cookie_name(): string {
         $options = self::load_options();
-        return $options['cookie_name'] ?? 'mo_jwt';
+        return sanitize_text_field($options['cookie_name'] ?? 'mo_jwt');
     }
 
     public static function get_samesite_policy(): string {
         $options = self::load_options();
-        return $options['samesite_policy'] ?? 'Lax';
+        $policy = $options['samesite_policy'] ?? 'Lax';
+        return in_array($policy, self::VALID_SAMESITE_VALUES, true) ? $policy : 'Lax';
     }
 
     public static function is_http_only(): bool {
         $options = self::load_options();
-        return $options['http_only'] ?? true;
+        return (bool) ($options['http_only'] ?? true);
     }
 
     public static function get_cookie_duration(): int {
         $options = self::load_options();
-        return $options['cookie_duration'] ?? 3600;
+        return absint($options['cookie_duration'] ?? 3600);
     }
 }
