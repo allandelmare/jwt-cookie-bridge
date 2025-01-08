@@ -64,7 +64,7 @@ class Settings_Manager {
                 'default' => [
                     'debug_mode' => false,
                     'samesite_policy' => 'Lax',
-                    'http_only' => true,
+                    'http_only' => false,
                     'cookie_name' => 'mo_jwt',
                     'cookie_duration' => 3600,
                 ]
