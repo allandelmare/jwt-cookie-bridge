@@ -10,6 +10,7 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Configurable cookie duration and attributes
 - Enhanced token validation and security checks
 - Translation-ready for international use
+- User data shortcodes for dynamic content
 
 ### Security
 - Configurable HTTP-only cookie support (disabled by default)
@@ -30,6 +31,18 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Token validation status
 - Process monitoring tools
 - Log clearing functionality
+
+### Shortcodes
+The plugin provides convenient shortcodes for displaying user information:
+- `[user_first_name]` - Displays the current user's first name
+- `[user_greeting]` - Displays a registration thank you message with the user's first name
+
+Example usage:
+```
+Welcome to our site, [user_first_name]!
+
+[user_greeting]
+```
 
 ## Requirements
 
@@ -129,6 +142,10 @@ GPLv2 or later - see LICENSE file
 Developed by Allan Delmare for seamless integration between WordPress and external applications using MiniOrange OAuth/OpenID SSO.
 
 ## Changelog
+### Version 1.1.0
+- Added user information shortcodes
+- Added documentation for shortcode usage
+- Enhanced readme files with usage examples
 
 ### Version 1.0.8
 - Updated documentation for clarity and accuracy

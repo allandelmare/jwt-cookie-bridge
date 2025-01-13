@@ -225,3 +225,24 @@ function uninstall_jwt_cookie_bridge(): void {
     delete_option('jwt_cookie_bridge_options');
     delete_transient('jwt_bridge_token_status');
 }
+
+// Add shortcode for user's first name
+add_shortcode('user_first_name', function() {
+    $user = wp_get_current_user();
+    if (!$user->exists()) {
+        return '';
+    }
+    return esc_html($user->first_name);
+});
+
+// Add shortcode for greeting with first name
+add_shortcode('user_greeting', function() {
+    $user = wp_get_current_user();
+    if (!$user->exists()) {
+        return esc_html__('Thank you for registering!', 'jwt-cookie-bridge');
+    }
+    return esc_html(sprintf(
+        __('Thank you for registering, %s!', 'jwt-cookie-bridge'), 
+        $user->first_name
+    ));
+});
