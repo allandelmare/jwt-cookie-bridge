@@ -1,45 +1,43 @@
 === JWT Cookie Bridge for MiniOrange SSO ===
 Contributors: allandelmare
-Tags: sso, jwt, oauth, authentication, miniorange, keycloak, single sign-on, tokens, cookies, user-display
+Tags: sso, jwt, oauth, authentication, miniorange, keycloak, single sign-on, tokens, cookies
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
 Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
 Securely store and manage JWT tokens from MiniOrange OAuth/OpenID in secure cookies for seamless Single Sign-On (SSO) integration.
+
 == Description ==
 JWT Cookie Bridge provides a secure and efficient way to handle JWT tokens from MiniOrange OAuth/OpenID Connect SSO solutions. Designed specifically for WordPress administrators who need to integrate their sites with external applications through SSO, this plugin ensures secure token storage and management.
-Key Features:
 
-Comprehensive token validation and security checks
-Flexible SameSite policy options (Lax/Strict/None)
-Advanced debug dashboard with process tracking
-Translation-ready for international use
-Detailed error logging and system status reporting
-Domain validation and security checks
-Compatible with MiniOrange OAuth/OpenID Enterprise edition
-User information shortcodes for dynamic content display
+Key Features:
+* Comprehensive token validation and security checks
+* Flexible SameSite policy options (Lax/Strict/None)
+* Advanced debug dashboard with process tracking
+* Translation-ready for international use
+* Detailed error logging and system status reporting
+* Domain validation and security checks
+* Compatible with MiniOrange OAuth/OpenID Enterprise edition
 
 Perfect for:
-
-WordPress sites requiring SSO integration
-Multi-application environments
-Enterprise authentication setups
-Keycloak integration scenarios
-Custom SSO implementations
-Dynamic user-aware content
+* WordPress sites requiring SSO integration
+* Multi-application environments
+* Enterprise authentication setups
+* Keycloak integration scenarios
+* Custom SSO implementations
 
 Security Features:
-
-Configurable HTTP-only cookies (disabled by default)
-Configurable SameSite policies
-Enhanced token validation
-Domain validation
-Input validation and sanitization
-Output escaping
-Capability checking
-Nonce verification
+* Configurable HTTP-only cookies (disabled by default)
+* Configurable SameSite policies
+* Enhanced token validation
+* Domain validation
+* Input validation and sanitization
+* Output escaping
+* Capability checking
+* Nonce verification
 
 == Installation ==
 
@@ -51,14 +49,6 @@ Nonce verification
 6. Enable debug mode if needed for troubleshooting
 
 == Frequently Asked Questions ==
-= What shortcodes are available? =
-The plugin provides two shortcodes:
-
-[user_first_name] - Displays the current user's first name
-[user_greeting] - Displays a registration thank you message with the user's first name
-
-= How do I use the shortcodes? =
-Simply insert either [user_first_name] or [user_greeting] anywhere in your post or page content where you want to display the user's information.
 
 = What is the minimum WordPress version required? =
 WordPress 5.0 or higher is required.
@@ -103,47 +93,25 @@ The plugin implements multiple security layers:
 3. View of client side cookie
 
 == Changelog ==
-= 1.1.0 =
 
-Added user information shortcodes
-Added [user_first_name] shortcode for displaying user's first name
-Added [user_greeting] shortcode for registration messages
-Updated documentation with shortcode usage examples
-Enhanced readme files
+= 1.1.1 =
+* Removed user information shortcodes
+* Simplified plugin core functionality
+* Updated documentation
+
+= 1.1.0 =
+* Added user information shortcodes
+* Added [user_first_name] shortcode for displaying user's first name
+* Added [user_greeting] shortcode for registration messages
+* Updated documentation with shortcode usage examples
+* Enhanced readme files
 
 = 1.0.9 =
+* Removed WordPress.org deployment configuration
+* Changed HTTP-only cookie default to false for JavaScript accessibility
+* Updated documentation and deployment configuration
 
-Removed WordPress.org deployment configuration
-Changed HTTP-only cookie default to false for JavaScript accessibility
-Updated documentation and deployment configuration
-
-= 1.0.8 =
-* Updated documentation for clarity and accuracy
-* Enhanced plugin repository structure
-* Added comprehensive screenshots and banners
-* Updated deployment configuration
-* Improved security documentation
-
-= 1.0.7.2 =
-* Fixed cookie domain handling for cross-domain compatibility
-* Enhanced domain validation for subdomain support
-
-= 1.0.7.1 =
-* Fixed .yml packager
-
-= 1.0.7 =
-* Enhanced JWT token validation and security
-* Improved error handling and logging
-* Enhanced settings page UI and help text
-* Added token refresh handling
-* Improved debug dashboard functionality
-* Added log clearing capability
-* Added domain validation
-* Enhanced security checks
-* Improved input validation
-
-= 1.0.6 =
-* Initial release with basic functionality
+[Previous versions...]
 
 == Privacy Notice ==
 
@@ -151,5 +119,5 @@ This plugin handles authentication tokens but does not store any personal user d
 
 == Upgrade Notice ==
 
-= 1.0.8 =
-Documentation update and repository structure enhancement. Recommended for all users.
+= 1.1.1 =
+Removed user information shortcodes and simplified core functionality. Safe to update.

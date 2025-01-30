@@ -10,7 +10,6 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Configurable cookie duration and attributes
 - Enhanced token validation and security checks
 - Translation-ready for international use
-- User data shortcodes for dynamic content
 
 ### Security
 - Configurable HTTP-only cookie support (disabled by default)
@@ -31,18 +30,6 @@ A WordPress plugin that securely stores JWT tokens from MiniOrange OAuth/OpenID 
 - Token validation status
 - Process monitoring tools
 - Log clearing functionality
-
-### Shortcodes
-The plugin provides convenient shortcodes for displaying user information:
-- `[user_first_name]` - Displays the current user's first name
-- `[user_greeting]` - Displays a registration thank you message with the user's first name
-
-Example usage:
-```
-Welcome to our site, [user_first_name]!
-
-[user_greeting]
-```
 
 ## Requirements
 
@@ -91,7 +78,7 @@ Welcome to our site, [user_first_name]!
 ## Development
 
 ### Current Version
-- Version: 1.0.8
+- Version: 1.1.1
 - Requires WordPress: 5.0+
 - Requires PHP: 7.4+
 
@@ -142,6 +129,12 @@ GPLv2 or later - see LICENSE file
 Developed by Allan Delmare for seamless integration between WordPress and external applications using MiniOrange OAuth/OpenID SSO.
 
 ## Changelog
+
+### Version 1.1.1
+- Removed user information shortcodes
+- Simplified plugin core functionality
+- Updated documentation
+
 ### Version 1.1.0
 - Added user information shortcodes
 - Added documentation for shortcode usage
@@ -153,25 +146,3 @@ Developed by Allan Delmare for seamless integration between WordPress and extern
 - Added comprehensive screenshots and banners
 - Updated deployment configuration
 - Improved security documentation
-
-### Version 1.0.7.2
-- Fixed cookie domain handling for cross-domain compatibility
-- Enhanced domain validation for subdomain support
-
-### Version 1.0.7.1
-- Fixed .yml packager
-
-### Version 1.0.7
-- Enhanced JWT token validation and security
-- Improved error handling and logging
-- Enhanced settings page UI and help text
-- Added token refresh handling
-- Improved debug dashboard functionality
-- Added log clearing capability
-- Added domain validation
-- Enhanced security checks
-- Improved input validation
-
-### Version 1.0.6
-- Initial release
-- Basic functionality
